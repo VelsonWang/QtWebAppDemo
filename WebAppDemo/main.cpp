@@ -64,6 +64,11 @@ int main(int argc, char *argv[])
     sessionSettings->beginGroup("sessions");
     RequestMapper::sessionStore = new HttpSessionStore(sessionSettings,&app);
 
+    // Static file controller
+    QSettings* fileSettings=new QSettings(configFileName,QSettings::IniFormat,&app);
+    fileSettings->beginGroup("files");
+    RequestMapper::staticFileController=new StaticFileController(fileSettings,&app);
+
     // Start the HTTP server
     QSettings* listenerSettings = new QSettings(configFileName, QSettings::IniFormat, &app);
     listenerSettings->beginGroup("listener");
@@ -79,6 +84,7 @@ int main(int argc, char *argv[])
     // http://localhost:8080/list
     // http://localhost:8080/login
     // http://localhost:8080/cookie
+    // http://localhost:8080/files/hello.html
     new HttpListener(listenerSettings,new RequestMapper(&app),&app);
 
 

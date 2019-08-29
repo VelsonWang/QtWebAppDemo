@@ -31,7 +31,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 DISTFILES += \
-    etc/webapp1.ini
+    etc/webapp1.ini \
+    docroot/files/hello.html
 
 HEADERS += \
     helloworldcontroller.h \

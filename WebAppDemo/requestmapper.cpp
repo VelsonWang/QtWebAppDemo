@@ -1,6 +1,7 @@
 #include "requestmapper.h"
 
 HttpSessionStore* RequestMapper::sessionStore = 0;
+StaticFileController* RequestMapper::staticFileController = 0;
 
 RequestMapper::RequestMapper(QObject* parent)
     : HttpRequestHandler(parent) {
@@ -10,6 +11,15 @@ RequestMapper::RequestMapper(QObject* parent)
 void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     QByteArray path=request.getPath();
     qDebug("RequestMapper: path=%s",path.data());
+
+    /*
+    QByteArray sessionId=sessionStore->getSessionId(request,response);
+    if (sessionId.isEmpty() && path!="/login") {
+        qDebug("RequestMapper: redirect to login page");
+        response.redirect("/login");
+        return;
+    }
+    */
 
     if (path=="/" || path=="/hello") {
         helloWorldController.service(request, response);
@@ -22,6 +32,9 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     }
     else if (path=="/cookie") {
         cookieTestController.service(request, response);
+    }
+    else if (path.startsWith("/files")) {
+        staticFileController->service(request,response);
     }
     else {
         response.setStatus(404,"Not found");

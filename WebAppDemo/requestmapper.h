@@ -7,6 +7,7 @@
 #include "listdatacontroller.h"
 #include "logincontroller.h"
 #include "cookietestcontroller.h"
+#include "staticfilecontroller.h"
 
 using namespace stefanfrings;
 
@@ -16,6 +17,7 @@ public:
     RequestMapper(QObject* parent=0);
     void service(HttpRequest& request, HttpResponse& response);
     static HttpSessionStore* sessionStore;
+    static StaticFileController* staticFileController;
 
 private:
     HelloWorldController helloWorldController;
