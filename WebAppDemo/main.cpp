@@ -9,6 +9,7 @@
 #include "httprequesthandler.h"
 #include "helloworldcontroller.h"
 #include "requestmapper.h"
+#include "filelogger.h"
 
 using namespace stefanfrings;
 
@@ -59,15 +60,29 @@ int main(int argc, char *argv[])
     // Load the configuration file
     QString configFileName = searchConfigFile();
 
+    // Configure logging
+    QSettings* logSettings = new QSettings(configFileName,QSettings::IniFormat, &app);
+    logSettings->beginGroup("logging");
+    RequestMapper::logger = new FileLogger(logSettings,1000, &app);
+    RequestMapper::logger->installMsgHandler();
+
+    // Log the library version
+    qDebug("QtWebApp has version %s",getQtWebAppLibVersion());
+
     // Session store
-    QSettings* sessionSettings = new QSettings(configFileName,QSettings::IniFormat,&app);
+    QSettings* sessionSettings = new QSettings(configFileName,QSettings::IniFormat, &app);
     sessionSettings->beginGroup("sessions");
     RequestMapper::sessionStore = new HttpSessionStore(sessionSettings,&app);
 
     // Static file controller
-    QSettings* fileSettings=new QSettings(configFileName,QSettings::IniFormat,&app);
+    QSettings* fileSettings = new QSettings(configFileName,QSettings::IniFormat, &app);
     fileSettings->beginGroup("files");
-    RequestMapper::staticFileController=new StaticFileController(fileSettings,&app);
+    RequestMapper::staticFileController = new StaticFileController(fileSettings, &app);
+
+    // Configure template cache
+    QSettings* templateSettings=new QSettings(configFileName,QSettings::IniFormat, &app);
+    templateSettings->beginGroup("templates");
+    RequestMapper::templateCache = new TemplateCache(templateSettings,&app);
 
     // Start the HTTP server
     QSettings* listenerSettings = new QSettings(configFileName, QSettings::IniFormat, &app);
@@ -85,6 +100,8 @@ int main(int argc, char *argv[])
     // http://localhost:8080/login
     // http://localhost:8080/cookie
     // http://localhost:8080/files/hello.html
+    // http://localhost:8080/list2
+    // http://localhost:8080/login?username=test&password=hello
     new HttpListener(listenerSettings,new RequestMapper(&app),&app);
 
 
@@ -92,31 +109,3 @@ int main(int argc, char *argv[])
 }
 
 
-/*
-int main(int argc, char *argv[])
-{
-    QCoreApplication app(argc, argv);
-#if 0
-    qDebug("Hello World");
-
-    QTextStream out(stdout);
-    QTextStream in(stdin);
-
-    out << "Enter your name: " << flush;
-    QString value = in.readLine();
-    out << "Hello " << value << endl;
-
-    out << "Enter two numbers: " << flush;
-    int num1;
-    int num2;
-    in >> num1;
-    in >> num2;
-    out << "You entered " << num1 << " and " << num2 << endl;
-#endif
-
-    QSettings* listenerSettings = new QSettings("../WebAppDemo/etc/webapp1.ini", QSettings::IniFormat, &app);
-    qDebug("config file loaded");
-
-    return app.exec();
-}
-*/

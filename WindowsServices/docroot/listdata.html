@@ -1,0 +1,22 @@
+<html>
+    <body>
+        {if logged-in}
+            Hello {name}
+        {else logged-in}
+            You are not logged in.
+            <br>
+            Go to the <a href="/login">login</a> page and then try again.
+        {end logged-in}
+
+        <p>
+        List of names:
+        <table>
+            {loop row}
+                <tr>
+                    <td>{row.number}</td>
+                    <td>{row.name}</td>
+                </tr>
+            {end row}
+        </table>
+    </body>
+</html>

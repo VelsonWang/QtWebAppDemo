@@ -1,0 +1,22 @@
+<html>
+    <body>
+        {if logged-in}
+            Bonjour {name}
+        {else logged-in}
+            Vous n'êtes pas connecté.
+            <br>
+            Accédez à la <a href="/login">page de connexion</a> et réessayez plus tard .
+        {end logged-in}
+
+        <p>
+        Liste des noms :
+        <table>
+            {loop row}
+                <tr>
+                    <td>{row.number}</td>
+                    <td>{row.name}</td>
+                </tr>
+            {end row}
+        </table>
+    </body>
+</html>

@@ -23,7 +23,6 @@ public:
     static StaticFileController* staticFileController;
     static TemplateCache* templateCache;
     static Logger* logger;
-
 private:
     HelloWorldController helloWorldController;
     ListDataController listDataController;
